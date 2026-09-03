@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Birthday Surprise ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Floating Hearts Background -->
+  <div class="hearts-container" id="heartsContainer" aria-hidden="true"></div>
+
+  <!-- Music Controller -->
+  <audio id="bgMusic" loop preload="auto">
+    <!-- Apne gaane ki file ka naam yahan likhein -->
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+  <button id="musicToggle" class="music-btn" aria-label="Toggle Music">🎵</button>
+
+  <main id="app">
+
+    <!-- 1. GIFT BOX SCREEN -->
+    <section class="screen active" id="screen-gift">
+      <div class="sparkles-title">A surprise awaits you... 🌟</div>
+      <p class="sparkle-sub">✨ Something special, just for you ✨</p>
+      
+      <div class="gift-box-wrap" id="giftBox" onclick="openGift()">
+        <div class="gift-lid">
+          <div class="gift-bow">
+            <div class="bow-left"></div>
+            <div class="bow-right"></div>
+            <div class="bow-center"></div>
+          </div>
+        </div>
+        <div class="gift-body">
+          <div class="ribbon-v"></div>
+          <div class="ribbon-h"></div>
+        </div>
+        <div class="box-glow"></div>
+      </div>
+
+      <p class="tap-hint">Tap the gift to open 🎁</p>
+    </section>
+
+    <!-- 2. PIN LOCK SCREEN -->
+    <section class="screen" id="screen-pin">
+      <div class="phone-time" id="lockTime">19:21</div>
+      <p class="pin-header-title">Birthday Surprise ❤️</p>
+      <div class="lock-icon" id="lockIcon">🔒</div>
+      <p class="pin-sub-label">Enter the secret code 💕</p>
+
+      <div class="pin-hint-box">
+        💡 Birthday Date aur Month hai<br><strong>Pin (2709)</strong>
+      </div>
+
+      <div class="pin-dots" id="pinDots">
+        <span class="p-dot"></span>
+        <span class="p-dot"></span>
+        <span class="p-dot"></span>
+        <span class="p-dot"></span>
+      </div>
+
+      <div class="keypad">
+        <button onclick="pressKey('1')">1</button>
+        <button onclick="pressKey('2')">2</button>
+        <button onclick="pressKey('3')">3</button>
+        <button onclick="pressKey('4')">4</button>
+        <button onclick="pressKey('5')">5</button>
+        <button onclick="pressKey('6')">6</button>
+        <button onclick="pressKey('7')">7</button>
+        <button onclick="pressKey('8')">8</button>
+        <button onclick="pressKey('9')">9</button>
+        <div class="keypad-dummy"></div>
+        <button onclick="pressKey('0')">0</button>
+        <button class="backspace" onclick="deleteKey()">⌫</button>
+      </div>
+
+      <p class="pin-status" id="pinStatus"></p>
+    </section>
+
+    <!-- 3. CURTAIN & WELCOME SCREEN -->
+    <section class="screen" id="screen-curtain">
+      <div class="curtains" id="curtains">
+        <div class="curtain curtain-left"></div>
+        <div class="curtain curtain-right"></div>
+        <button class="curtain-open-btn" id="openCurtainBtn" onclick="openCurtains()">💖 Open</button>
+      </div>
+
+      <div class="welcome-content" id="welcomeContent">
+        <div class="avatar-frame">
+          <div class="avatar-glow"></div>
+          <span class="avatar-emoji">🐻</span>
+        </div>
+        <h2>A little surprise for a very<br>special soul... 🦚💙</h2>
+        <p class="welcome-text">With a few heartfelt wishes and Kanha Ji's<br>blessings, just for you. 🙏✨</p>
+        <button class="primary glow-btn" onclick="goTo('screen-cake')">Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- 4. BIRTHDAY CAKE & LIVE AGE STATS -->
+    <section class="screen" id="screen-cake">
+      <h2 class="name-title">Happy Birthday Sakshi Tiwari (Radha Rani) 🎂</h2>
+      <p class="stats-title">The World Has Been Better Since 💕</p>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="statYears">19</span>
+          <span class="stat-lbl">YEARS</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="statDays">6,939</span>
+          <span class="stat-lbl">DAYS</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="statHours">166,554</span>
+          <span class="stat-lbl">HOURS</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="statMins">9,993,270</span>
+          <span class="stat-lbl">MINUTES</span>
+        </div>
+      </div>
+
+      <!-- Birthday Cake -->
+      <div class="cake-container" id="cake" onclick="blowCandles()">
+        <div class="cake-plate"></div>
+        <div class="cake-layer bottom-layer"></div>
+        <div class="cake-layer top-layer">
+          <div class="cake-dots">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Candles -->
+        <div class="candles-wrap">
+          <div class="number-candle candle-1">
+            <span class="candle-digit">1</span>
+            <div class="flame" id="flame1"></div>
+            <div class="smoke" id="smoke1"></div>
+          </div>
+          <div class="number-candle candle-2">
+            <span class="candle-digit">9</span>
+            <div class="flame" id="flame2"></div>
+            <div class="smoke" id="smoke2"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="cake-hint" id="cakeHint">Tap the cake to blow the candles 🎂</p>
+      
+      <div class="cake-actions">
+        <button class="pill-action-btn" id="blowBtn" onclick="blowCandles()">💨 Blow candles</button>
+      </div>
+
+      <div class="wish-reveal-btn hidden" id="cakeNextWrap">
+        <p class="wish-subtext">Make a wish... ✨</p>
+        <button class="primary glow-btn" onclick="goTo('screen-memories')">See Our Memories 🌸</button>
+      </div>
+    </section>
+
+    <!-- 5. POLAROID MEMORIES STACK -->
+    <section class="screen" id="screen-memories">
+      <p class="eyebrow">CUTE MOMENTS</p>
+      <h2 class="memories-head">Cute Memories 💕</h2>
+
+      <div class="polaroid-deck" id="polaroidDeck" onclick="nextPolaroid()">
+        <!-- Card 1 -->
+        <div class="polaroid-card active" data-index="0">
+          <div class="polaroid-img" style="background-image: url('img/photo1.jpeg');"></div>
+          <p class="polaroid-caption">My Favourite View, Always ❤️</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="polaroid-card" data-index="1">
+          <div class="polaroid-img" style="background-image: url('img/photo2.jpeg');"></div>
+          <p class="polaroid-caption">The One I Never Get Tired of Seeing ❤️</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="polaroid-card" data-index="2">
+          <div class="polaroid-img" style="background-image: url('img/photo3.jpeg');"></div>
+          <p class="polaroid-caption">How Can I Ever Skip This One? 🫶</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="polaroid-card" data-index="3">
+          <div class="polaroid-img" style="background-image: url('img/photo4.jpeg');"></div>
+          <p class="polaroid-caption">Kanha Ji Must Have Taken Extra Time With This One 🦚💙</p>
+        </div>
+        <!-- Card 5 -->
+        <div class="polaroid-card" data-index="4">
+          <div class="polaroid-img" style="background-image: url('img/photo5.jpeg');"></div>
+          <p class="polaroid-caption">Not Just a Picture, It's a Little Happiness ❤️</p>
+        </div>
+      </div>
+
+      <div class="photo-dots" id="polaroidDots">
+        <span class="dot on"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <p class="polaroid-tip">← swipe, or tap the photo →</p>
+
+      <button class="primary glow-btn" onclick="goTo('screen-balloons')">Next Surprise 🎁</button>
+    </section>
+
+    <!-- 6. BALLOON POP WISHES -->
+    <section class="screen" id="screen-balloons">
+      <h2>Pop the Wishes 🎈</h2>
+      <p class="sub">Tap each balloon to reveal a little wish</p>
+
+      <div class="balloons-grid" id="balloonsContainer"></div>
+
+      <!-- Live Wish Toast -->
+      <div class="wish-toast hidden" id="wishToast">
+        <p id="wishToastText"></p>
+      </div>
+
+      <div class="pop-counter" id="popCounter">Popped 0/8</div>
+
+      <button class="primary glow-btn hidden" id="balloonNextBtn" onclick="goTo('screen-puzzle')">Continue 💫</button>
+    </section>
+
+    <!-- 7. PHOTO SLIDING PUZZLE -->
+    <section class="screen" id="screen-puzzle">
+      <h2>Birthday Puzzle 🎂</h2>
+      <p class="sub">Solve to unlock a special message ✨</p>
+
+      <div class="puzzle-top-bar">
+        <div class="move-pill">
+          <span class="move-count" id="moveCount">0</span>
+          <span class="move-lbl">MOVES</span>
+        </div>
+        <div class="preview-pill">
+          <div class="preview-thumb" id="puzzleThumb"></div>
+          <span class="preview-lbl">PICTURE</span>
+        </div>
+      </div>
+
+      <div class="puzzle-board-wrap">
+        <div class="puzzle-board" id="puzzleBoard"></div>
+        <div class="puzzle-solved-full hidden" id="puzzleSolvedFull">
+          <div class="full-img" id="fullImgPreview"></div>
+          <p class="solved-badge">🎉 Puzzle complete! 💖</p>
+        </div>
+      </div>
+
+      <div class="puzzle-btns" id="puzzleControls">
+        <button class="ghost-pill" onclick="shufflePuzzle()">🔀 Shuffle Again</button>
+        <button class="primary-pill" onclick="autoSolvePuzzle()">✨ Solve it for me</button>
+      </div>
+
+      <button class="primary glow-btn hidden" id="puzzleNextBtn" onclick="goTo('screen-scratch')">One Last Surprise ✨</button>
+    </section>
+
+    <!-- 8. SCRATCH CARD SCREEN -->
+    <section class="screen" id="screen-scratch">
+      <p class="eyebrow">ONE LAST SURPRISE ✨</p>
+      <h2>Scratch the golden card to reveal it</h2>
+
+      <div class="scratch-card-box" id="scratchCardBox">
+        <!-- Background image -->
+        <img src="img/photo2.jpeg" alt="Surprise Memory" class="scratch-bg-img" />
+
+        <!-- Message Box over photo -->
+        <div class="scratch-glass-overlay">
+          <div class="blessing-badge">
+            <span class="feather-icon">🪶</span>
+            <p class="blessing-msg">
+              May Kanha Ji always keep you happy and protected. And whenever you feel alone, remember—there's always someone who cares for you deeply. ❤️
+            </p>
+            <span class="kanha-icon">🦚</span>
+          </div>
+        </div>
+
+        <!-- Scratch layer -->
+        <canvas id="scratchCanvas"></canvas>
+      </div>
+
+      <div class="scratch-progress-bar">
+        <div class="progress-fill" id="scratchProgress"></div>
+      </div>
+      <p class="scratch-hint-text">drag your finger across the card ✨</p>
+
+      <button class="primary glow-btn hidden" id="scratchNextBtn" onclick="goTo('screen-letter')">Read My Letter 💌</button>
+    </section>
+
+    <!-- 9. ENVELOPE & TYPEWRITER LETTER -->
+    <section class="screen" id="screen-letter">
+      
+      <!-- Envelope View -->
+      <div class="envelope-view" id="envelopeView">
+        <p class="eyebrow">A LETTER JUST FOR YOU</p>
+        <div class="envelope-wrapper" id="envelope" onclick="openLetterEnvelope()">
+          <div class="envelope-back"></div>
+          <div class="letter-sheet-peek"></div>
+          <div class="envelope-front"></div>
+          <div class="envelope-flap"></div>
+          <div class="wax-seal">💖</div>
+        </div>
+        <p class="envelope-tap-hint">Tap to open 💌</p>
+      </div>
+
+      <!-- Letter Content View -->
+      <div class="letter-view hidden" id="letterView">
+        <p class="eyebrow letter-top-title">A Letter Just For You</p>
+        <div class="letter-parchment">
+          <div class="letter-meta">
+            <h3>My dearest Sakshi Kumari ❤️</h3>
+            <p class="letter-wish-title">💖 Happy Birthday 💖 🎂</p>
+          </div>
+          
+          <div class="letter-body-text" id="typewriterTarget">
+            <!-- Typewriter output here -->
+          </div>
+        </div>
+
+        <button class="ghost-btn-reload" onclick="location.reload()">↺ Watch it again</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
