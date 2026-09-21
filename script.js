@@ -18,6 +18,7 @@ function goTo(screenId) {
 // Background Floating Hearts
 function createFloatingHearts() {
   const container = document.getElementById("heartsContainer");
+  if (!container) return;
   const hearts = ["❤️", "💖", "💕", "🌸", "✨", "💙"];
   setInterval(() => {
     const h = document.createElement("span");
@@ -38,25 +39,27 @@ const musicToggle = document.getElementById("musicToggle");
 let isPlaying = false;
 
 function playAudio() {
-  if (!isPlaying) {
+  if (bgMusic && !isPlaying) {
     bgMusic.play().then(() => {
       isPlaying = true;
-      musicToggle.classList.add("playing");
+      if (musicToggle) musicToggle.classList.add("playing");
     }).catch(() => {});
   }
 }
 
-musicToggle.onclick = () => {
-  if (isPlaying) {
-    bgMusic.pause();
-    isPlaying = false;
-    musicToggle.classList.remove("playing");
-  } else {
-    bgMusic.play();
-    isPlaying = true;
-    musicToggle.classList.add("playing");
-  }
-};
+if (musicToggle) {
+  musicToggle.onclick = () => {
+    if (isPlaying) {
+      bgMusic.pause();
+      isPlaying = false;
+      musicToggle.classList.remove("playing");
+    } else {
+      bgMusic.play();
+      isPlaying = true;
+      musicToggle.classList.add("playing");
+    }
+  };
+}
 
 /* ========================================================
    1. GIFT BOX SCREEN
@@ -64,7 +67,7 @@ musicToggle.onclick = () => {
 function openGift() {
   playAudio();
   const box = document.getElementById("giftBox");
-  box.classList.add("opened");
+  if (box) box.classList.add("opened");
   setTimeout(() => {
     goTo("screen-pin");
   }, 900);
@@ -108,20 +111,20 @@ function checkPin() {
   const status = document.getElementById("pinStatus");
   const lock = document.getElementById("lockIcon");
   if (enteredPin === CORRECT_PIN) {
-    lock.textContent = "🔓";
-    status.textContent = "Welcome! 💕 Opening...";
+    if (lock) lock.textContent = "🔓";
+    if (status) status.textContent = "Welcome! 💕 Opening...";
     setTimeout(() => {
       goTo("screen-curtain");
     }, 700);
   } else {
     const screen = document.getElementById("screen-pin");
-    screen.classList.add("shake");
-    status.textContent = "Incorrect Pin! Try again.";
+    if (screen) screen.classList.add("shake");
+    if (status) status.textContent = "Incorrect Pin! Try again.";
     setTimeout(() => {
-      screen.classList.remove("shake");
+      if (screen) screen.classList.remove("shake");
       enteredPin = "";
       updatePinDots();
-      status.textContent = "";
+      if (status) status.textContent = "";
     }, 800);
   }
 }
@@ -142,16 +145,17 @@ updateClock();
 ======================================================== */
 function openCurtains() {
   const curtains = document.getElementById("curtains");
-  curtains.classList.add("open");
-  setTimeout(() => {
-    curtains.style.display = "none";
-  }, 1300);
+  if (curtains) {
+    curtains.classList.add("open");
+    setTimeout(() => {
+      curtains.style.display = "none";
+    }, 1300);
+  }
 }
 
 /* ========================================================
    4. BIRTHDAY CAKE & LIVE AGE STATS
 ======================================================== */
-// Birthday: 27 September 2005 (matches video's 19 years / 2709 PIN)
 const BIRTH_DATE = new Date("2007-09-27T00:00:00");
 
 function calculateAgeStats() {
@@ -163,10 +167,15 @@ function calculateAgeStats() {
   const totalMins = Math.floor(diffMs / (1000 * 60));
   const approxYears = Math.floor(totalDays / 365.25);
 
-  document.getElementById("statYears").textContent = approxYears;
-  document.getElementById("statDays").textContent = totalDays.toLocaleString();
-  document.getElementById("statHours").textContent = totalHours.toLocaleString();
-  document.getElementById("statMins").textContent = totalMins.toLocaleString();
+  const y = document.getElementById("statYears");
+  const d = document.getElementById("statDays");
+  const h = document.getElementById("statHours");
+  const m = document.getElementById("statMins");
+
+  if (y) y.textContent = approxYears;
+  if (d) d.textContent = totalDays.toLocaleString();
+  if (h) h.textContent = totalHours.toLocaleString();
+  if (m) m.textContent = totalMins.toLocaleString();
 }
 calculateAgeStats();
 
@@ -175,38 +184,54 @@ function blowCandles() {
   if (candlesBlown) return;
   candlesBlown = true;
 
-  document.getElementById("flame1").classList.add("off");
-  document.getElementById("flame2").classList.add("off");
+  const f1 = document.getElementById("flame1");
+  const f2 = document.getElementById("flame2");
+  if (f1) f1.classList.add("off");
+  if (f2) f2.classList.add("off");
 
   const s1 = document.getElementById("smoke1");
   const s2 = document.getElementById("smoke2");
-  s1.classList.add("puff");
-  s2.classList.add("puff");
+  if (s1) s1.classList.add("puff");
+  if (s2) s2.classList.add("puff");
 
-  document.getElementById("cakeHint").textContent = "Candles blown! 🎂✨";
-  document.getElementById("blowBtn").textContent = "🔥 Relight";
-  document.getElementById("blowBtn").onclick = relightCandles;
-  document.getElementById("cakeNextWrap").classList.remove("hidden");
+  const hint = document.getElementById("cakeHint");
+  const blowBtn = document.getElementById("blowBtn");
+  const nextWrap = document.getElementById("cakeNextWrap");
+
+  if (hint) hint.textContent = "Candles blown! 🎂✨";
+  if (blowBtn) {
+    blowBtn.textContent = "🔥 Relight";
+    blowBtn.onclick = relightCandles;
+  }
+  if (nextWrap) nextWrap.classList.remove("hidden");
 }
 
 function relightCandles() {
   candlesBlown = false;
-  document.getElementById("flame1").classList.remove("off");
-  document.getElementById("flame2").classList.remove("off");
-  document.getElementById("cakeHint").textContent = "Tap the cake to blow the candles 🎂";
-  document.getElementById("blowBtn").textContent = "💨 Blow candles";
-  document.getElementById("blowBtn").onclick = blowCandles;
+  const f1 = document.getElementById("flame1");
+  const f2 = document.getElementById("flame2");
+  if (f1) f1.classList.remove("off");
+  if (f2) f2.classList.remove("off");
+
+  const hint = document.getElementById("cakeHint");
+  const blowBtn = document.getElementById("blowBtn");
+
+  if (hint) hint.textContent = "Tap the cake to blow the candles 🎂";
+  if (blowBtn) {
+    blowBtn.textContent = "💨 Blow candles";
+    blowBtn.onclick = blowCandles;
+  }
 }
 
 /* ========================================================
    5. POLAROID MEMORIES STACK
 ======================================================== */
 let activePolaroid = 0;
-const polaroidCards = document.querySelectorAll(".polaroid-card");
-const polaroidDots = document.querySelectorAll("#polaroidDots .dot");
-
 function nextPolaroid() {
+  const polaroidCards = document.querySelectorAll(".polaroid-card");
+  const polaroidDots = document.querySelectorAll("#polaroidDots .dot");
   if (polaroidCards.length === 0) return;
+
   const currentCard = polaroidCards[activePolaroid];
   currentCard.classList.add("slide-out");
 
@@ -227,7 +252,7 @@ function nextPolaroid() {
 }
 
 /* ========================================================
-   6. BALLOON POP WISHES (8 Wishes from Video)
+   6. BALLOON POP WISHES
 ======================================================== */
 const balloonWishes = [
   "I just want to see you happy, always. ❤️",
@@ -241,38 +266,56 @@ const balloonWishes = [
 ];
 
 const balloonColors = [
-  "#ff5388", "#ffbe3d", "#5bbaff", "#9b68eb", 
-  "#51d683", "#ff6b6b", "#e65ca8", "#f7cf45"
+  "#ff4071", "#ffaa1d", "#3ba8f5", "#9252ea", 
+  "#3ec473", "#ff5959", "#df419b", "#f5c324"
 ];
 
 const balloonsContainer = document.getElementById("balloonsContainer");
 let poppedCount = 0;
 
-balloonWishes.forEach((wish, idx) => {
-  const b = document.createElement("div");
-  b.className = "balloon-item";
-  b.style.backgroundColor = balloonColors[idx];
-  b.onclick = () => {
-    if (b.classList.contains("popped")) return;
-    b.classList.add("popped");
-    poppedCount++;
+if (balloonsContainer) {
+  balloonsContainer.innerHTML = "";
+  balloonWishes.forEach((wish, idx) => {
+    const b = document.createElement("div");
+    b.className = "balloon-item";
+    b.style.backgroundColor = balloonColors[idx];
 
-    // Sound effect using Web Audio API (zero external audio dependency)
-    playPopSound();
+    const shine = document.createElement("div");
+    shine.className = "balloon-shine";
 
-    const toast = document.getElementById("wishToast");
-    const toastText = document.getElementById("wishToastText");
-    toastText.textContent = wish;
-    toast.classList.remove("hidden");
+    const knot = document.createElement("div");
+    knot.className = "balloon-knot";
 
-    document.getElementById("popCounter").textContent = `Popped ${poppedCount}/8`;
+    const string = document.createElement("div");
+    string.className = "balloon-string";
 
-    if (poppedCount === 8) {
-      document.getElementById("balloonNextBtn").classList.remove("hidden");
-    }
-  };
-  balloonsContainer.appendChild(b);
-});
+    b.appendChild(shine);
+    b.appendChild(knot);
+    b.appendChild(string);
+
+    b.onclick = () => {
+      if (b.classList.contains("popped")) return;
+      b.classList.add("popped");
+      poppedCount++;
+
+      playPopSound();
+
+      const toast = document.getElementById("wishToast");
+      const toastText = document.getElementById("wishToastText");
+      if (toastText) toastText.textContent = wish;
+      if (toast) toast.classList.remove("hidden");
+
+      const counter = document.getElementById("popCounter");
+      if (counter) counter.textContent = `Popped ${poppedCount}/8`;
+
+      if (poppedCount === 8) {
+        const nextBtn = document.getElementById("balloonNextBtn");
+        if (nextBtn) nextBtn.classList.remove("hidden");
+      }
+    };
+    balloonsContainer.appendChild(b);
+  });
+}
 
 function playPopSound() {
   try {
@@ -292,13 +335,14 @@ function playPopSound() {
 }
 
 /* ========================================================
-   7. PHOTO SLIDING PUZZLE (3x3 with "Solve it for me")
+   7. PHOTO SLIDING PUZZLE
 ======================================================== */
-let puzzleTiles = [0, 1, 2, 3, 4, 5, 6, 7, 8]; // 8 is empty space
+let puzzleTiles = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 let moves = 0;
 const board = document.getElementById("puzzleBoard");
 
 function renderPuzzle() {
+  if (!board) return;
   board.innerHTML = "";
   puzzleTiles.forEach((tileIndex, pos) => {
     const tile = document.createElement("div");
@@ -317,8 +361,6 @@ function renderPuzzle() {
 
 function moveTile(pos) {
   const emptyPos = puzzleTiles.indexOf(8);
-  const validMoves = [pos - 1, pos + 1, pos - 3, pos + 3];
-
   const sameRow = Math.floor(pos / 3) === Math.floor(emptyPos / 3);
   const isAdjacent = (pos - 1 === emptyPos && sameRow) ||
                      (pos + 1 === emptyPos && sameRow) ||
@@ -328,7 +370,8 @@ function moveTile(pos) {
   if (isAdjacent) {
     [puzzleTiles[pos], puzzleTiles[emptyPos]] = [puzzleTiles[emptyPos], puzzleTiles[pos]];
     moves++;
-    document.getElementById("moveCount").textContent = moves;
+    const mc = document.getElementById("moveCount");
+    if (mc) mc.textContent = moves;
     renderPuzzle();
     checkPuzzleWin();
   }
@@ -336,12 +379,12 @@ function moveTile(pos) {
 
 function shufflePuzzle() {
   moves = 0;
-  document.getElementById("moveCount").textContent = "0";
+  const mc = document.getElementById("moveCount");
+  if (mc) mc.textContent = "0";
   for (let i = puzzleTiles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [puzzleTiles[i], puzzleTiles[j]] = [puzzleTiles[j], puzzleTiles[i]];
   }
-  // Ensure 8 is empty somewhere
   renderPuzzle();
 }
 
@@ -357,9 +400,12 @@ function checkPuzzleWin() {
 }
 
 function triggerPuzzleWin() {
-  document.getElementById("puzzleSolvedFull").classList.remove("hidden");
-  document.getElementById("puzzleControls").classList.add("hidden");
-  document.getElementById("puzzleNextBtn").classList.remove("hidden");
+  const full = document.getElementById("puzzleSolvedFull");
+  const ctrl = document.getElementById("puzzleControls");
+  const nxt = document.getElementById("puzzleNextBtn");
+  if (full) full.classList.remove("hidden");
+  if (ctrl) ctrl.classList.add("hidden");
+  if (nxt) nxt.classList.remove("hidden");
 }
 
 shufflePuzzle();
@@ -367,27 +413,25 @@ shufflePuzzle();
 /* ========================================================
    8. SCRATCH CARD SCREEN
 ======================================================== */
-/* ========================================================
-   8. SCRATCH CARD SCREEN (FIXED)
-======================================================== */
 const scratchCanvas = document.getElementById("scratchCanvas");
 const scratchCardBox = document.getElementById("scratchCardBox");
-const sCtx = scratchCanvas.getContext("2d");
+let sCtx = null;
+if (scratchCanvas) {
+  sCtx = scratchCanvas.getContext("2d");
+}
 let isScratching = false;
 let isScratchedComplete = false;
 
 function initScratchCanvas() {
-  if (!scratchCardBox) return;
+  if (!scratchCardBox || !scratchCanvas || !sCtx) return;
 
   const rect = scratchCardBox.getBoundingClientRect();
-  // Fallback dimension agar calculation ke time bounding box 0 ho
-  const w = rect.width || 300;
-  const h = rect.height || 200;
+  const w = rect.width || 310;
+  const h = rect.height || 215;
 
   scratchCanvas.width = w;
   scratchCanvas.height = h;
 
-  // Golden shimmer gradient draw karein
   const g = sCtx.createLinearGradient(0, 0, w, h);
   g.addColorStop(0, "#d49729");
   g.addColorStop(0.3, "#ffd97d");
@@ -404,7 +448,6 @@ function initScratchCanvas() {
   sCtx.fillText("drag your finger across the card", w / 2, h / 2 + 20);
 }
 
-// Window resize par canvas update
 window.addEventListener("resize", () => {
   const scratchScreen = document.getElementById("screen-scratch");
   if (scratchScreen && scratchScreen.classList.contains("active")) {
@@ -413,7 +456,7 @@ window.addEventListener("resize", () => {
 });
 
 function scratchDraw(e) {
-  if (isScratchedComplete || scratchCanvas.width === 0 || scratchCanvas.height === 0) return;
+  if (isScratchedComplete || !scratchCanvas || !sCtx || scratchCanvas.width === 0 || scratchCanvas.height === 0) return;
 
   const rect = scratchCanvas.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -431,8 +474,7 @@ function scratchDraw(e) {
 }
 
 function calculateScratchProgress() {
-  // Width/Height zero hone par check rok dein
-  if (!scratchCanvas.width || !scratchCanvas.height) return;
+  if (!scratchCanvas || !sCtx || !scratchCanvas.width || !scratchCanvas.height) return;
 
   try {
     const imgData = sCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
@@ -452,42 +494,33 @@ function calculateScratchProgress() {
       scratchCanvas.style.opacity = "0";
       setTimeout(() => {
         scratchCanvas.style.display = "none";
-        document.getElementById("scratchNextBtn").classList.remove("hidden");
+        const nxt = document.getElementById("scratchNextBtn");
+        if (nxt) nxt.classList.remove("hidden");
       }, 600);
     }
   } catch (err) {
-    console.warn("Scratch progress check pending:", err);
+    console.warn("Scratch check:", err);
   }
 }
 
-// Mouse Events
-scratchCanvas.addEventListener("mousedown", (e) => { 
-  isScratching = true; 
-  scratchDraw(e); 
-});
-window.addEventListener("mouseup", () => { isScratching = false; });
-scratchCanvas.addEventListener("mousemove", (e) => { 
-  if (isScratching) scratchDraw(e); 
-});
+if (scratchCanvas) {
+  scratchCanvas.addEventListener("mousedown", (e) => { isScratching = true; scratchDraw(e); });
+  window.addEventListener("mouseup", () => { isScratching = false; });
+  scratchCanvas.addEventListener("mousemove", (e) => { if (isScratching) scratchDraw(e); });
 
-// Touch Events for Mobile
-scratchCanvas.addEventListener("touchstart", (e) => { 
-  isScratching = true; 
-  scratchDraw(e); 
-}, { passive: true });
-window.addEventListener("touchend", () => { isScratching = false; });
-scratchCanvas.addEventListener("touchmove", (e) => { 
-  if (isScratching) scratchDraw(e); 
-}, { passive: true });
+  scratchCanvas.addEventListener("touchstart", (e) => { isScratching = true; scratchDraw(e); }, { passive: true });
+  window.addEventListener("touchend", () => { isScratching = false; });
+  scratchCanvas.addEventListener("touchmove", (e) => { if (isScratching) scratchDraw(e); }, { passive: true });
+}
 
 /* ========================================================
-   9. ENVELOPE & TYPEWRITER LETTER
+   9. ENVELOPE & TYPEWRITER LETTER (FIXED WITH COMMAS)
 ======================================================== */
 const letterParagraphs = [
   "Sabse pehle, tumhe tumhare birthday ki dil se bahut saari shubhkamnayein. Main bas itna chahta hoon ki tumhari zindagi ka har aane wala din tumhare liye aur bhi khoobsurat ho. Tumhari har chhoti-badi wish poori ho, tumhe har kadam par khushiyan milen aur tumhari ye pyari si smile hamesha tumhare chehre par bani rahe.Aur sabse zyada, main chahta hoon ki tumhari smile hamesha aise hi rahe, kyunki pata nahi kyun, tumhari smile mere liye kuch zyada hi special hai. 😊❤️",
   "Kuch log humari life mein bina kisi planning ke aa jaate hain, aur phir pata hi nahi chalta ki kab woh humare liye baaki sabse zyada special ban jaate hain. Tumhare saath bhi kuch aisa hi hua. Pata nahi kab tumhari baatein, tumhari smile, tumhara nature aur tumhari chhoti-chhoti aadatein mujhe itni achhi lagne lagi. Bas itna pata hai ki ab tumhari ek message bhi mere face par smile la sakti hai, aur tumse baat karna mere din ka ek favourite part ban gaya hai. ❤️",
-   "Tumne mujhse poocha tha na ki itne saare logon mein tum hi kyun pasand aayi? Sach bolun to iska koi ek reason nahi hai. Tumhari smile achhi lagti hai, tumhara nature achha lagta hai, tumhari simplicity achhi lagti hai, tum jis tarah baat karti ho woh achha lagta hai… aur sabse zyada shayad ye ki tumhare saath mujhe kuch bhi pretend karne ki zarurat feel nahi hoti. Tumse baat karte waqt bas mann karta hai ki baat chalti rahe. Shayad isi liye, bina kisi plan ke, tum meri favourite person ban gayi. ❤️"
-   "Tum aur main Kanha ji ko itna maante hain, isliye aaj tumhare birthday par meri ek chhoti si wish Kanha ji se bhi hai—woh tumhe hamesha apni kripa mein rakhein, tumhare har mushkil waqt mein tumhara haath thaame rakhein, tumhe har galat raaste se bachayein aur tumhari zindagi ko sukoon, pyaar aur khushiyon se bhar dein. Aur meri ek aur chhoti si prayer hai—Kanha ji tumhe itni himmat dein ki tum apne har dream ke peeche bina dare chal sako, aur itna sukoon dein ki mushkil dinon mein bhi tumhare dil mein umeed bani rahe. Aur meri ek chhoti si wish aur hai—Kanha Ji tumhe hamesha khush rakhein, aur agar kabhi tumhare chehre ki smile kam ho, to mujhe tumhe dobara smile karane ka mauka dein. ❤️🙏",
+  "Tumne mujhse poocha tha na ki itne saare logon mein tum hi kyun pasand aayi? Sach bolun to iska koi ek reason nahi hai. Tumhari smile achhi lagti hai, tumhara nature achha lagta hai, tumhari simplicity achhi lagti hai, tum jis tarah baat karti ho woh achha lagta hai… aur sabse zyada shayad ye ki tumhare saath mujhe kuch bhi pretend karne ki zarurat feel nahi hoti. Tumse baat karte waqt bas mann karta hai ki baat chalti rahe. Shayad isi liye, bina kisi plan ke, tum meri favourite person ban gayi. ❤️",
+  "Tum aur main Kanha ji ko itna maante hain, isliye aaj tumhare birthday par meri ek chhoti si wish Kanha ji se bhi hai—woh tumhe hamesha apni kripa mein rakhein, tumhare har mushkil waqt mein tumhara haath thaame rakhein, tumhe har galat raaste se bachayein aur tumhari zindagi ko sukoon, pyaar aur khushiyon se bhar dein. Aur meri ek aur chhoti si prayer hai—Kanha ji tumhe itni himmat dein ki tum apne har dream ke peeche bina dare chal sako, aur itna sukoon dein ki mushkil dinon mein bhi tumhare dil mein umeed bani rahe. Aur meri ek chhoti si wish aur hai—Kanha Ji tumhe hamesha khush rakhein, aur agar kabhi tumhare chehre ki smile kam ho, to mujhe tumhe dobara smile karane ka mauka dein. ❤️🙏",
   "Tum zindagi mein jo bhi banna chahti ho, jo bhi achieve karna chahti ho, Kanha ji tumhe usmein safalta dein. Aur jab kabhi zindagi thodi difficult lage, to yaad rakhna—koi bhi waqt hamesha ke liye nahi hota. Mushkilein aati hain, lekin woh guzar bhi jaati hain.Life hamesha hamare plan ke according nahi chalti, lekin kuch log aur kuch moments phir bhi dil mein apni jagah bana lete hain. Tum meri life ka ek aisa hi beautiful part ho.Aur main chahta hoon ki jab tum apne dreams achieve karo, tab tum peeche mudkar dekho aur tumhare face par wahi smile ho jo mujhe itni pasand hai. ❤️",
   "Ye chhota sa gift shayad duniya ka sabse bada ya sabse mehenga gift nahi hai, lekin ise choose karte waqt mere mind mein sirf tum thi. Bas mann mein laga ki tumhare liye kuch aisa hona chahiye jo tumhe pasand aaye aur jab bhi tum ise dekho, tumhe mere taraf se di hui ek chhoti si smile yaad aa jaye. ❤️",
   "Aur ek baat jo main dil se kehna chahta hoon… life mein kabhi koi situation kitni bhi difficult kyun na ho jaaye, please khud ko akela mat samajhna. Agar kabhi tumhara mood off ho, tumhe kisi se apni baat kehni ho, ya bas bina kisi reason ke kisi se baat karne ka mann ho, to mujhe yaad kar lena. Main tumhari baat sununga, tumhe samjhne ki koshish karunga aur jitna ho sake tumhare face par smile laane ki koshish karunga. ❤️",
@@ -500,16 +533,19 @@ const letterParagraphs = [
 
 function openLetterEnvelope() {
   const env = document.getElementById("envelope");
-  env.classList.add("open");
+  if (env) env.classList.add("open");
   setTimeout(() => {
-    document.getElementById("envelopeView").classList.add("hidden");
-    document.getElementById("letterView").classList.remove("hidden");
+    const envView = document.getElementById("envelopeView");
+    const letView = document.getElementById("letterView");
+    if (envView) envView.classList.add("hidden");
+    if (letView) letView.classList.remove("hidden");
     startLetterTypewriter();
   }, 900);
 }
 
 function startLetterTypewriter() {
   const container = document.getElementById("typewriterTarget");
+  if (!container) return;
   container.innerHTML = "";
   let pIdx = 0;
 
